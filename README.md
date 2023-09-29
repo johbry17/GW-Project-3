@@ -37,4 +37,4 @@ Dataset provided by ?
 Thanks to Geronimo Perez for feedback and assistance
 
 ## Author
-Bryan Johns, September, 2023
+Amber Amparo, Moussa Diop, Bryan Johns, Imen Najar, October, 2023
