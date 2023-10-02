@@ -5,6 +5,8 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 import config
 
+
+## TEST database
 # connect to database
 DATABASE_URL = f'postgresql://postgres:{config.password}@localhost:5432/{config.database}'
 engine = create_engine(DATABASE_URL)
@@ -16,6 +18,7 @@ Base.prepare(autoload_with=engine)
 
 print("The classes are:\n" + ", ".join(sorted(Base.classes.keys())))
 
+# TEST database
 # save references to each table
 # campaign = Base.classes.campaign
 category = Base.classes.category
@@ -29,7 +32,7 @@ session = Session(bind=engine)
 # flask setup
 app = Flask(__name__, template_folder='templates/')
 
-# home page
+# define app routes
 @app.route('/')
 def home():
     data = session.query(category).all()

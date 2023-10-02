@@ -10,8 +10,12 @@
 </head>
 
 <body>
+
+
+<!-- !!TEST!!!   -->
+<!-- GW Project 3 test to print SQL database on top of html -->
   <br>
-  <a href="about.html">About</a>
+  <a href="{{ url_for('about') }}">About</a>
   <br>
   <ul>
     {% if data %}
@@ -24,6 +28,10 @@
       <li>No contacts found.</li>
     {% endif %}
   </ul>
+
+
+
+
   <br>
   <div class="container">
     <div class="row">
