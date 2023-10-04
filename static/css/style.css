@@ -3,3 +3,12 @@ body {
     background-color: #121212;
     color: #ffffff;
 }
+
+/* fixes leaflet tile bug */
+.leaflet-container.leaflet-touch-drag {
+    -ms-touch-action: pinch-zoom;
+    touch-action: none;
+    touch-action: pinch-zoom;
+    width: 100vw;
+    height: 100vh;
+}

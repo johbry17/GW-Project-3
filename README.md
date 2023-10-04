@@ -8,14 +8,19 @@ Development on this project has stopped.
 - [Usage](#usage)
 - [Gallery](#gallery)
 - [References](#references)
+- [Licenses](#licenses)
 - [Acknowledgements](#acknowledgements)
 - [Author](#author)
 
 ## Description
-We build something.
+We expose the shady underworld of AirBnB
 
 ## Usage
 Click on the website and do stuff
+
+airbnb is a backup of the database
+database contains the csv's and SQL code to create the database
+exploratory_data_analysis contains the EDA
 
 ## Gallery
 
@@ -30,7 +35,11 @@ Our mental health:
 
 ## References
 
-Dataset provided by ?
+Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/)
+
+## Licenses
+
+[Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/)
 
 ## Acknowledgements
 
