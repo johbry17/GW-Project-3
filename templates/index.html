@@ -24,10 +24,10 @@
   <a href="{{ url_for('about') }}">About</a>
   <br>
   <ul>
-    {% if data %}
-    {% for row in data %}
+    {% if listings %}
+    {% for listing in listings[:10] %}
           <ul>
-                  <li><strong>{{ row.category_id }}:</strong> {{ row.category }}</li>
+                  <li><strong>{{ listing.listing_name }}</li>
           </ul>
     {% endfor %}
     {% else %}
