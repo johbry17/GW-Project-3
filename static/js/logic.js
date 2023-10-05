@@ -1,5 +1,5 @@
 function fetchData() {
-  fetch('/api/listings_by_neighborhood')
+  fetch('/api/listings_with_most_reviews')
       .then(response => response.json())
       .then(data => {
           if (data.length > 0) {

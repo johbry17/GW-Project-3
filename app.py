@@ -35,9 +35,6 @@ def get_listings():
     query = text(f"SELECT * FROM listings")
     return jsonify(fetch(query))
 
-
-################
-
 @app.route('/api/listings_by_property_type')
 def get_listings_by_property_type():
     query = text("SELECT property_type, COUNT(*) as num_listings FROM listings GROUP BY property_type")
@@ -47,37 +44,12 @@ def get_listings_by_property_type():
 def get_listings_by_neighborhood():
     query = text("SELECT neighbourhood_cleansed, COUNT(*) as num_listings FROM listings GROUP BY neighbourhood_cleansed")
     return jsonify(fetch(query))
-
-
-# @app.route('/api/listings_by_neighborhood')
-# def get_listings_by_neighborhood():
-   
-#     query = text("SELECT neighbourhood_cleansed, COUNT(*) as num_listings FROM listings GROUP BY neighbourhood_cleansed")
-
-#     connection = engine.connect()
-#     result = connection.execute(query)
-
-#     column_names = result.keys()
-
-#     data = [dict(zip(column_names, row)) for row in result]
-#     connection.close()
-
-#     return jsonify(data)
    
 @app.route('/api/listings_with_most_reviews')
 def get_listings_with_most_reviews():
     query = text(" SELECT l.*, COUNT(r.id) AS num_reviews FROM listings AS l WHERE, reviews as r GROUP BY l.id ORDER BY num_reviews DESC LIMIT 5")
+    return jsonify(fetch(query))
 
-    connection = engine.connect()
-    result = connection.execute(query)
-
-    column_names = result.keys()
-
-    data = [dict(zip(column_names, row)) for row in result]
-
-    connection.close()
-
-    return jsonify(data)
 if __name__ == '__main__':
     app.run()
 
