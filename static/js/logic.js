@@ -1,5 +1,5 @@
 function fetchData() {
-  fetch('/api/reviews')
+  fetch('/api/listings_by_neighborhood')
       .then(response => response.json())
       .then(data => {
           if (data.length > 0) {
@@ -8,10 +8,15 @@ function fetchData() {
               
               // Create a string with column headers
               columnHeaderString = columnHeaders.join(', ');
+
+            // Create a string to display all the data
+            dataString = data.map(item => {
+                return columnHeaders.map(header => item[header]).join(', ');
+            }).join('\n');
               
               // Display column headers in the specified div
               sampleMetadataDiv = document.getElementById('sample-metadata');
-              sampleMetadataDiv.textContent = columnHeaderString;
+              sampleMetadataDiv.textContent = columnHeaderString + '\n' + dataString;
           } else {
               console.log('No data found.');
           }

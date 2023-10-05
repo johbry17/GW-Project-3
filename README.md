@@ -32,6 +32,10 @@ Our mental health:
 
 ![Tectonic plates](./static/images/Nintendo_suffering.jpg)
 
+ERD:
+
+![ERD](./static/images/airbnb_erd.png)
+
 
 ## References
 

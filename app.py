@@ -9,9 +9,10 @@ engine = create_engine(DATABASE_URL)
 app = Flask(__name__, template_folder='templates/')
 
 # connects and queries database
-def fetch(table_name):
+def fetch(query):
     with engine.connect() as connection:
-        result = connection.execute(text(f"SELECT * FROM {table_name}"))
+        print('Data: ',query)
+        result = connection.execute(query)
         column_names = result.keys()
     return [dict(zip(column_names, row)) for row in result]
 
@@ -28,44 +29,55 @@ def about():
 
 ################
 
-# api routes
-@app.route('/api/availability')
-def get_availability():
-    return jsonify(fetch('availability'))
-
-@app.route('/api/calendar')
-def get_calendar():
-    return jsonify(fetch('calendar'))
-
-@app.route('/api/calculated_host_listings')
-def get_calculated_host_listings():
-    return jsonify(fetch('calculated_host_listings'))
-
-@app.route('/api/hosts')
-def get_hosts():
-    return jsonify(fetch('hosts'))
-
+# app routes
 @app.route('/api/listings')
 def get_listings():
-    return jsonify(fetch('listings'))
+    query = text(f"SELECT * FROM listings")
+    return jsonify(fetch(query))
 
-@app.route('/api/listing_reviews')
-def get_listing_reviews():
-    return jsonify(fetch('listing_reviews'))
-
-@app.route('/api/min_max_night')
-def get_min_max_night():
-    return jsonify(fetch('min_max_night'))
-
-@app.route('/api/reviewers')
-def get_reviewers():
-    return jsonify(fetch('reviewers'))
-
-@app.route('/api/reviews')
-def get_reviews():
-    return jsonify(fetch('reviews'))
 
 ################
 
+@app.route('/api/listings_by_property_type')
+def get_listings_by_property_type():
+    query = text("SELECT property_type, COUNT(*) as num_listings FROM listings GROUP BY property_type")
+    return jsonify(fetch(query))
+
+@app.route('/api/listings_by_neighborhood')
+def get_listings_by_neighborhood():
+    query = text("SELECT neighbourhood_cleansed, COUNT(*) as num_listings FROM listings GROUP BY neighbourhood_cleansed")
+    return jsonify(fetch(query))
+
+
+# @app.route('/api/listings_by_neighborhood')
+# def get_listings_by_neighborhood():
+   
+#     query = text("SELECT neighbourhood_cleansed, COUNT(*) as num_listings FROM listings GROUP BY neighbourhood_cleansed")
+
+#     connection = engine.connect()
+#     result = connection.execute(query)
+
+#     column_names = result.keys()
+
+#     data = [dict(zip(column_names, row)) for row in result]
+#     connection.close()
+
+#     return jsonify(data)
+   
+@app.route('/api/listings_with_most_reviews')
+def get_listings_with_most_reviews():
+    query = text(" SELECT l.*, COUNT(r.id) AS num_reviews FROM listings AS l WHERE, reviews as r GROUP BY l.id ORDER BY num_reviews DESC LIMIT 5")
+
+    connection = engine.connect()
+    result = connection.execute(query)
+
+    column_names = result.keys()
+
+    data = [dict(zip(column_names, row)) for row in result]
+
+    connection.close()
+
+    return jsonify(data)
 if __name__ == '__main__':
     app.run()
+
