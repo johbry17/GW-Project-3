@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS reviewers;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS min_max_night;
 DROP TABLE IF EXISTS availability;
@@ -9,7 +8,6 @@ DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS calendar;
 
 select* from reviews;
-select* from  reviewers;
 select* from  hosts;
 select* from  min_max_night;
 select* from  availability;
@@ -40,15 +38,13 @@ CREATE TABLE listings(
     
 );
 
-CREATE TABLE reviewers(
-	reviewer_id BIGINT PRIMARY KEY,
-	reviewer_name VARCHAR
-);
+
 CREATE TABLE reviews(
 	review_id BIGINT PRIMARY KEY,
 	listing_id BIGINT REFERENCES listings,
 	review_date DATE,
-	reviewer_id BIGINT REFERENCES reviewers,
+	reviewer_id BIGINT,
+	reviewer_name VARCHAR,
 	review_comments VARCHAR
 	
 );
@@ -60,7 +56,7 @@ CREATE TABLE hosts(
 	host_url VARCHAR,
 	host_name VARCHAR,
 	host_since DATE,
-	host_location VARCHAR ,
+	host_location VARCHAR,
 	host_about VARCHAR,
 	host_response_time VARCHAR,
 	host_response_rate VARCHAR,
