@@ -19,3 +19,11 @@ body.dark-mode {
     padding-bottom: 100%; /* sets height equal to width, a square */
     position: relative;
 }
+
+/*size chart  */
+.chartBox {
+    width:800px;
+    height:400px;
+    float: right;
+  margin-top: 60px;
+  }
