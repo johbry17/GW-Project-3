@@ -11,7 +11,6 @@ app = Flask(__name__, template_folder='templates/')
 # connects and queries database
 def fetch(query):
     with engine.connect() as connection:
-        print('Data: ',query)
         result = connection.execute(query)
         column_names = result.keys()
     return [dict(zip(column_names, row)) for row in result]
