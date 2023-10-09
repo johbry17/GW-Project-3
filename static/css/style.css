@@ -4,7 +4,22 @@ body.dark-mode {
     color: #ffffff;
 }
 
-/* fixes leaflet tile bug */
+/*size chart  */
+.chartBox {
+    width:800px;
+    height:400px;
+    float: right;
+  margin-top: 60px;
+  }
+
+/* map container */
+.map-container {
+    width: 100%;
+    padding-bottom: 100%; /* sets height equal to width, a square */
+    position: relative;
+}
+
+  /* fixes leaflet tile bug */
 .leaflet-container.leaflet-touch-drag {
     -ms-touch-action: pinch-zoom;
     touch-action: none;
@@ -13,17 +28,40 @@ body.dark-mode {
     height: 100vh;
 }
 
-/* map containter */
-.map-container {
-    width: 100%;
-    padding-bottom: 100%; /* sets height equal to width, a square */
-    position: relative;
+/* marker css */
+.marker-popup {
+    font-size: 16px;
+    border: 2px solid gray;
+    border-radius: 5px;
 }
 
-/*size chart  */
-.chartBox {
-    width:800px;
-    height:400px;
-    float: right;
-  margin-top: 60px;
-  }
+/* neighborhood summary css */
+.neighborhood-info {
+    font-size: 16px;
+    background-color: white;
+    padding: 10px;
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+
+/* neighborhood drop down */
+.neighborhood-control {
+    background-color: white;
+    padding: 10px;
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+
+.neighborhood-control label,
+.neighborhood-control select {
+    font-size: 16px;
+    padding: 5px;
+}
+
+#neighborhoods-dropdown {
+    width: 200px;
+}
+
+#neighborhoods-dropdown:focus {
+    width: auto;
+}

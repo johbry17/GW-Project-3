@@ -31,7 +31,8 @@ def about():
 # app routes
 @app.route('/api/listings')
 def get_listings():
-    query = text(f"SELECT * FROM listings")
+    query = text(f"""SELECT * FROM listings 
+JOIN listing_description ON listings.listing_id = listing_description.id""")
     return jsonify(fetch(query))
 
 @app.route('/api/listings_by_property_type')

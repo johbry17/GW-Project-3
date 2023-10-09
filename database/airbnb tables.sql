@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS listing_description;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS min_max_night;
@@ -7,13 +8,14 @@ DROP TABLE IF EXISTS calculated_host_listings;
 DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS calendar;
 
+select* from listing_description;
 select* from reviews;
-select* from  hosts;
-select* from  min_max_night;
-select* from  availability;
-select* from  listing_reviews;
+select* from hosts;
+select* from min_max_night;
+select* from availability;
+select* from listing_reviews;
 select* from calculated_host_listings;
-select* from  listings;
+select* from listings;
 select* from calendar;
 
 CREATE TABLE listings(
@@ -35,7 +37,6 @@ CREATE TABLE listings(
 	beds decimal,
 	price decimal,
 	license VARCHAR
-    
 );
 
 
@@ -46,7 +47,6 @@ CREATE TABLE reviews(
 	reviewer_id BIGINT,
 	reviewer_name VARCHAR,
 	review_comments VARCHAR
-	
 );
 
 
@@ -70,8 +70,8 @@ CREATE TABLE hosts(
 	host_verifications VARCHAR,
 	host_has_profile_pic BOOLEAN,
 	host_identity_verified BOOLEAN
-
 );
+
 CREATE TABLE min_max_night(
 	listing_id BIGINT PRIMARY KEY REFERENCES listings,
 	minimum_nights DECIMAL,
@@ -94,6 +94,7 @@ CREATE TABLE availability(
 	calendar_last_scraped DATE,
     instant_bookable BOOLEAN
 );
+
 CREATE TABLE listing_reviews (
 	listing_id BIGINT PRIMARY KEY REFERENCES listings,
 	number_of_reviews INT,
@@ -110,6 +111,7 @@ CREATE TABLE listing_reviews (
 	reviews_per_month DECIMAL,
 	review_scores_value DECIMAL
 );
+
 CREATE TABLE calculated_host_listings(
 	listing_id BIGINT PRIMARY KEY REFERENCES listings,
 	calculated_host_listings_count INT,
@@ -117,6 +119,7 @@ CREATE TABLE calculated_host_listings(
 	calculated_host_listings_count_private_rooms INT,
 	calculated_host_listings_count_shared_rooms INT
 );
+
 CREATE TABLE calendar (
 	num int PRIMARY KEY,
 	listing_id BIGINT REFERENCES listings,
@@ -126,4 +129,9 @@ CREATE TABLE calendar (
 	adjusted_price VARCHAR,
 	minimum_nights INT,
 	maximum_nights INT
-	);
+);
+
+CREATE TABLE listing_description(
+	id BIGINT PRIMARY KEY REFERENCES listings,
+	hover_description VARCHAR(1500)
+);
