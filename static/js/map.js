@@ -1,5 +1,3 @@
-// const { radiansToLength } = require("@turf/helpers");
-
 // define globals
 let map; // main map
 let neighborhoodsLayer; // polygons of neighborhoods
