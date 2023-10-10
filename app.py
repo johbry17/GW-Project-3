@@ -31,8 +31,11 @@ def about():
 # app routes
 @app.route('/api/listings')
 def get_listings():
+    # hosts has nulls, so LEFT JOIN
     query = text(f"""SELECT * FROM listings 
-JOIN listing_description ON listings.listing_id = listing_description.id""")
+JOIN listing_description ON listings.listing_id = listing_description.id
+JOIN listing_reviews ON listings.listing_id = listing_reviews.listing_id
+LEFT JOIN hosts ON listings.listing_id = hosts.listing_id""")
     return jsonify(fetch(query))
 
 @app.route('/api/listings_by_property_type')

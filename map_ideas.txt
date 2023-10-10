@@ -1,17 +1,4 @@
-
-
-
-  dynamic color markers
-(radio buttons?)
-price
-rating
-license
-
   popups (listings., unless otherwise noted)
-description on hover over listing.simple summary
-price
-beds
-bathrooms_text
 hosts.host_name
   host_name
     host_about
@@ -21,11 +8,6 @@ hosts.host_name
     calculated_host_listings.calculated_host_listings_count_private_rooms
     calculated_host_listings.calculated_host_listings_count_shared_rooms
     (a subhover) 
-accommodates
-property_type
-listing_url (hover the actual url - call it pretty like google)
-neighborhood_cleansed
-license
 listing_reviews.review_scores_rating
   review_scores_accuracy
   review_scores_cleanliness
@@ -37,9 +19,13 @@ listing_reviews.review_scores_rating
 
 
   charts infoBox
-dc vs neighborhood max, min, median, mode
-property type
-ratings
+add a toggle for property type
+
+  dynamic color markers
+(radio buttons?)
+price
+rating
+license
 
 decide what to do with airbnbs that have no listing_description
 add a webpage to show EDA plots, w/ tooltip "click to expand", that expands to fullscreen

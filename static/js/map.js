@@ -8,11 +8,12 @@ fetch("/api/listings")
   .then((response) => response.json())
   .then((data) => {
     listingsData = data;
-    [dcMeanPrice, dcMedianPrice] = calculateDCStats(data);
+    [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating] = calculateDCStats(data);
     fetch("/static/resources/neighbourhoods.geojson")
       .then((response) => response.json())
       .then((neighborhoodData) => {
         createMap(createMarkers(data), neighborhoodData);
+        console.log(listingsData.length);
       });
   });
 
@@ -50,11 +51,10 @@ function createMap(airbnbs, neighborhoods) {
 
   infoBox.onAdd = function (map) {
     let div = L.DomUtil.create("div", "info legend neighborhood-info");
-    div.innerHTML =
-      "Welcome to the map" +
-      "Choose a neighborhood for a closer look" +
-      "Each AirBnB has a marker that shows summary information" +
-      "When you return to this view, summary stats for all of DC will appear here";
+    div.innerHTML =`<strong>Welcome to the map</strong><br>
+      Choose a neighborhood for a closer look<br>
+      Click on an AirBnB to investigate a listing<br>
+      Return here to see summary stats for all of DC`;
     return div;
   };
 
@@ -85,8 +85,11 @@ function createMarkers(data) {
       markerOptions
     );
 
+    // call function to fill in popup content
+    popUpContent = createPopupContent(listing);
+
     // marker info popups
-    marker.bindPopup(listing.hover_description, { className: "marker-popup" });
+    marker.bindPopup(popUpContent, { className: "marker-popup" });
 
     // boolean to track if a popup is open
     let popupOpen = false;
@@ -116,6 +119,24 @@ function createMarkers(data) {
   });
 
   return markers;
+}
+
+// populates popup
+function createPopupContent(listing) {
+  price = parseFloat(listing.price);
+  hostVerified = listing.host_identity_verified === 't' ? 'Verified' : 'Unverified'
+
+  return `<h4>${listing.hover_description}</h4>
+  <a href="${listing.listing_url}" target="_blank">Link to listing</a><br>
+  Price: $${price.toFixed(2)}<br>
+  Property Type: ${listing.property_type}<br>
+  Accommodates: ${listing.accommodates}<br>
+  Rating: ${listing.review_scores_rating}<br>
+  Host: ${listing.host_name}<br>
+  Host Verified: ${hostVerified}<br>
+  Host Total Listings: ${listing.host_total_listings_count}<br>
+  License: ${listing.license}<br>
+  `;
 }
 
 // create dropdown for neighborhood interaction
@@ -214,10 +235,12 @@ function dcInfoBox() {
   infoBoxElement.innerHTML = `<strong>Washington, D.C.</strong><br>
   Number of AirBnB's: ${listingsData.length}<br>
   Mean Price: $${dcMeanPrice.toFixed(2)}<br>
-  Median Price: $${dcMedianPrice.toFixed(2)}<br>`;
+  Median Price: $${dcMedianPrice.toFixed(2)}<br>
+  Mean Rating: ${dcMeanRating.toFixed(2)}<br>
+  Median Rating: ${dcMedianRating.toFixed(2)}<br>`;
 
   // remove any boundaries from prior calls of zoomIn()
-  neighborhoodsLayer.resetStyle(boundaries);
+  neighborhoodsLayer.resetStyle();
 }
 
 // changes infoBox summary for neighborhoods
@@ -233,94 +256,100 @@ function updateInfoBox(neighborhoodDesignation) {
 
   // Update the content of the info box for neighborhoods
   if (infoBoxElement) {
+    // price
     meanPrice = neighborhoodListings.reduce((sum, listing) => sum + parseFloat(listing.price), 0) / neighborhoodListings.length;
-    medianPrice = calculateMedian(neighborhoodListings)
+    medianPrice = calculateMedian(neighborhoodListings, (listing) => parseFloat(listing.price))
+    // ratings
+    let nonNullRatings = neighborhoodListings.filter((listing) => listing.review_scores_rating !== null);
+    meanRating = nonNullRatings.reduce((sum, listing) => sum + parseFloat(listing.review_scores_rating), 0) / nonNullRatings.length;
+    medianRating = calculateMedian(nonNullRatings, (listing) => parseFloat(listing.review_scores_rating));
 
     infoBoxElement.innerHTML = 
     `<strong>${neighborhoodDesignation}</strong><br>
     Number of AirBnB's in Neighborhood: ${neighborhoodListings.length}
     <div id="infoBox-container">
-        <div id="infoBox-price" class = "infoBox-chart"></div>
-        <div id="infoBox-ratings" class = "infoBox-chart"></div>
+        <div id="infoBox-chart" class = "infoBox-chart"></div>
       <select id="infoBox-selector">
-        <option value="infoBox-price">Price</option>
-        <option value="infoBox-ratings">Ratings</option>
+        <option value="price">Price</option>
+        <option value="ratings">Ratings</option>
       </select>
     </div>`;
-    infoBoxPrice(neighborhoodDesignation);
-    
-    // neighborhood vs. DC price
-    function infoBoxPrice(neighborhoodDesignation) {
-      // to dynamically narrow y-axis to emphasize difference
-      minRange = Math.min(meanPrice, medianPrice, dcMeanPrice, dcMedianPrice) - 20;
-      maxRange = Math.max(meanPrice, medianPrice, dcMeanPrice, dcMedianPrice) + 20;
 
-      trace = {
-        x: ['Mean (Neighborhood)', 'Median (Neighborhood)', 'Mean (All of DC)', 'Median (All of DC)'],
-        y: [meanPrice, medianPrice, dcMeanPrice, dcMedianPrice],
-        type: 'bar',
-        hovertemplate: '%{y:$,.2f}',
-        marker: {
-          color: ['blue', 'blue', 'red', 'red'],
-          line: {
-            color: 'black',
-            width: 1,
-          },
-        },
-      }
-
-      layout = {
-        xaxis: { tickangle: 45, },
-        yaxis: { title: 'Price', range: [minRange, maxRange] },
-      }
-
-      Plotly.newPlot("infoBox-price", [trace], layout);
-    }
-  
-  //   function infoBoxRatings(neighborhoodDesignation) {
-  //     selectedHood = data.map(d => d.ratings === neighborhoodDesignation);
-  //     selectedHoodPrices = data.map(d => d.mean);
-
-  //     trace = {
-  //       x: selectedHood,
-  //       y: selectedHoodPrices,
-  //       type: 'bar',
-  //     }
-
-  //     layout = {
-  //       yaxis: 'Mean Price',
-  //     }
-
-  //     Plotly.newPlot("infoBox-ratings", [trace], layout);
-  //   }
+    // set to price by default
+    infoBoxChart(neighborhoodDesignation, 'price');
 
     infoBoxChange = document.getElementById('infoBox-selector')
     infoBoxChange.addEventListener('change', function() {
       chosenChart = infoBoxChange.value;
-      document.querySelectorAll('.infoBox-chart').forEach(function (chart) {
-        chart.style.display = 'none';
-      });
-      document.getElementById(chosenChart).style.display = 'block';
+      infoBoxChart(neighborhoodDesignation, chosenChart);
     });
   };
 };
 
+// neighborhood vs. DC chart function
+function infoBoxChart(neighborhoodDesignation, chartType) {
+  // determine which chart to plot
+  let chosenData, yTitle;
+  if (chartType === 'price') {
+    chosenData = [meanPrice, medianPrice, dcMeanPrice, dcMedianPrice];
+    yTitle = 'Price';
+    // to dynamically narrow y-axis to emphasize difference
+    minRange = Math.min(...chosenData) - 20;
+    maxRange = Math.max(...chosenData) + 20;
+  } else if (chartType === 'ratings') {
+    chosenData = [meanRating, medianRating, dcMeanRating, dcMedianRating];
+    yTitle = 'Rating';
+    minRange = Math.min(...chosenData) - .2;
+    maxRange = Math.max(...chosenData) + .2;
+  }
+
+  trace = {
+    x: ['Mean (Neighborhood)', 'Median (Neighborhood)', 'Mean (All of DC)', 'Median (All of DC)'],
+    y: chosenData,
+    type: 'bar',
+    hovertemplate: chartType === 'price' ? '%{y:$,.2f}' : '%{y:.2f}',
+    marker: {
+      color: ['blue', 'blue', 'red', 'red'],
+      line: {
+        color: 'black',
+        width: 1,
+      },
+    },
+  }
+
+  layout = {
+    xaxis: { tickangle: 35, },
+    yaxis: { title: yTitle, range: [minRange, maxRange] },
+  }
+
+  Plotly.newPlot("infoBox-chart", [trace], layout);
+}
+
+
 function calculateDCStats(data) {
+  // prices
   dcMeanPrice = listingsData.reduce((sum, listing) => sum + parseFloat(listing.price), 0) / listingsData.length;
-  dcMedianPrice = calculateMedian(listingsData);
-  return [dcMeanPrice, dcMedianPrice];
+  dcMedianPrice = calculateMedian(listingsData, (listing) => parseFloat(listing.price));
+
+  // ratings
+  let nonNullRatings = listingsData.filter((listing) => listing.review_scores_rating !== null);
+  dcMeanRating = nonNullRatings.reduce((sum, listing) => sum + parseFloat(listing.review_scores_rating), 0) / nonNullRatings.length;
+  dcMedianRating = calculateMedian(nonNullRatings, (listing) => parseFloat(listing.review_scores_rating));
+  
+  return [dcMeanPrice, dcMedianPrice, dcMeanRating, dcMedianRating];
 };
 
-function calculateMedian(neighborhoodListings) {
-  // create and sort array of prices
-  prices = neighborhoodListings.map((listing) => parseFloat(listing.price));
-  prices.sort((a, b) => a-b);
+// calculates the median of an array of numbers
+function calculateMedian(neighborhoodListings, value) {
+  // create and sort array of values
+  values = neighborhoodListings.map(value);
+  values.sort((a, b) => a-b);
 
   // select midpoint - Math.floor to round down to an int, to get the index of the array
-  mid = Math.floor(prices.length /2);
-  if (prices.length % 2 === 0) {
-    return (prices[mid - 1] + prices[mid]) / 2;
+  mid = Math.floor(values.length /2);
+  if (values.length % 2 === 0) {
+    return (values[mid - 1] + values[mid]) / 2;
   } else {
-    return prices[mid];
+    return values[mid];
   }
 }
