@@ -13,7 +13,6 @@ fetch("/api/listings")
       .then((response) => response.json())
       .then((neighborhoodData) => {
         createMap(createMarkers(data), neighborhoodData);
-        console.log(listingsData.length);
       });
   });
 
