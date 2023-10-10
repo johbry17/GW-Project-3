@@ -47,7 +47,7 @@ function fetchListingInfo(selectedListingId) {
     select.appendChild(defaultOption);
 
     // Fetch data from JSON
-    fetch('/api/listings')
+    fetch('/api/listings1')
         .then(response => response.json())
         .then(data => {
             // Loop through the data and add options to the select
