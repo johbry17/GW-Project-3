@@ -32,5 +32,3 @@ add a webpage to show EDA plots, w/ tooltip "click to expand", that expands to f
 scrape pretty url summary for listing in popup
 add data for entire calendar year, analyze for trends in price / availability
 add a minimize button to infoBox
-
-get ETL for building sql from Imen for repo records
