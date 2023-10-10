@@ -8,6 +8,7 @@ fetch("/api/listings")
   .then((response) => response.json())
   .then((data) => {
     listingsData = data;
+    [dcMeanPrice, dcMedianPrice] = calculateDCStats(data);
     fetch("/static/resources/neighbourhoods.geojson")
       .then((response) => response.json())
       .then((neighborhoodData) => {
@@ -41,7 +42,7 @@ function createMap(airbnbs, neighborhoods) {
   // add markers
   airbnbs.addTo(map);
 
-  // call function to control neighborhoods
+  // call function to manage user interaction with neighborhoods
   neighborhoodsControl(map, neighborhoods);
 
   // create info box
@@ -200,72 +201,126 @@ function zoomIn(neighborhoodDesignation) {
   // reload marker popups
   newMarkers = createMarkers(listingsData);
   newMarkers.addTo(map);
-
+  
   updateInfoBox(neighborhoodDesignation);
 }
 
-// changes infoBox summary
+// infoBox for all of DC
+function dcInfoBox() {
+  let infoBoxElement = document.querySelector(".neighborhood-info");
+
+  infoBoxElement.innerHTML = "";
+  
+  infoBoxElement.innerHTML = `<strong>Washington, D.C.</strong><br>
+  Number of AirBnB's: ${listingsData.length}<br>
+  Mean Price: $${dcMeanPrice.toFixed(2)}<br>
+  Median Price: $${dcMedianPrice.toFixed(2)}<br>`;
+
+  // remove any boundaries from prior calls of zoomIn()
+  neighborhoodsLayer.resetStyle(boundaries);
+}
+
+// changes infoBox summary for neighborhoods
 function updateInfoBox(neighborhoodDesignation) {
+
+  // filter to selected neighborhood
+  let neighborhoodListings = listingsData.filter(
+    (listing) => listing.neighbourhood_cleansed === neighborhoodDesignation
+  );
+  
   // Find the info box element
   let infoBoxElement = document.querySelector(".neighborhood-info");
 
-  // Update the content of the info box
+  // Update the content of the info box for neighborhoods
   if (infoBoxElement) {
-    infoBoxElement.innerHTML = `This is ${neighborhoodDesignation}`;
+    meanPrice = neighborhoodListings.reduce((sum, listing) => sum + parseFloat(listing.price), 0) / neighborhoodListings.length;
+    medianPrice = calculateMedian(neighborhoodListings)
+
+    infoBoxElement.innerHTML = 
+    `<strong>${neighborhoodDesignation}</strong><br>
+    Number of AirBnB's in Neighborhood: ${neighborhoodListings.length}
+    <div id="infoBox-container">
+        <div id="infoBox-price" class = "infoBox-chart"></div>
+        <div id="infoBox-ratings" class = "infoBox-chart"></div>
+      <select id="infoBox-selector">
+        <option value="infoBox-price">Price</option>
+        <option value="infoBox-ratings">Ratings</option>
+      </select>
+    </div>`;
+    infoBoxPrice(neighborhoodDesignation);
+    
+    // neighborhood vs. DC price
+    function infoBoxPrice(neighborhoodDesignation) {
+      // to dynamically narrow y-axis to emphasize difference
+      minRange = Math.min(meanPrice, medianPrice, dcMeanPrice, dcMedianPrice) - 20;
+      maxRange = Math.max(meanPrice, medianPrice, dcMeanPrice, dcMedianPrice) + 20;
+
+      trace = {
+        x: ['Mean (Neighborhood)', 'Median (Neighborhood)', 'Mean (All of DC)', 'Median (All of DC)'],
+        y: [meanPrice, medianPrice, dcMeanPrice, dcMedianPrice],
+        type: 'bar',
+        hovertemplate: '%{y:$,.2f}',
+        marker: {
+          color: ['blue', 'blue', 'red', 'red'],
+          line: {
+            color: 'black',
+            width: 1,
+          },
+        },
+      }
+
+      layout = {
+        xaxis: { tickangle: 45, },
+        yaxis: { title: 'Price', range: [minRange, maxRange] },
+      }
+
+      Plotly.newPlot("infoBox-price", [trace], layout);
+    }
+  
+  //   function infoBoxRatings(neighborhoodDesignation) {
+  //     selectedHood = data.map(d => d.ratings === neighborhoodDesignation);
+  //     selectedHoodPrices = data.map(d => d.mean);
+
+  //     trace = {
+  //       x: selectedHood,
+  //       y: selectedHoodPrices,
+  //       type: 'bar',
+  //     }
+
+  //     layout = {
+  //       yaxis: 'Mean Price',
+  //     }
+
+  //     Plotly.newPlot("infoBox-ratings", [trace], layout);
+  //   }
+
+    infoBoxChange = document.getElementById('infoBox-selector')
+    infoBoxChange.addEventListener('change', function() {
+      chosenChart = infoBoxChange.value;
+      document.querySelectorAll('.infoBox-chart').forEach(function (chart) {
+        chart.style.display = 'none';
+      });
+      document.getElementById(chosenChart).style.display = 'block';
+    });
+  };
+};
+
+function calculateDCStats(data) {
+  dcMeanPrice = listingsData.reduce((sum, listing) => sum + parseFloat(listing.price), 0) / listingsData.length;
+  dcMedianPrice = calculateMedian(listingsData);
+  return [dcMeanPrice, dcMedianPrice];
+};
+
+function calculateMedian(neighborhoodListings) {
+  // create and sort array of prices
+  prices = neighborhoodListings.map((listing) => parseFloat(listing.price));
+  prices.sort((a, b) => a-b);
+
+  // select midpoint - Math.floor to round down to an int, to get the index of the array
+  mid = Math.floor(prices.length /2);
+  if (prices.length % 2 === 0) {
+    return (prices[mid - 1] + prices[mid]) / 2;
+  } else {
+    return prices[mid];
   }
 }
-
-function dcInfoBox() {
-  updateInfoBox("Washington, D.C.");
-}
-
-//   dynamic color markers
-// (radio buttons?)
-// price
-// rating
-// license
-
-//   popups (listings., unless otherwise noted)
-// description on hover over listing.simple summary
-// price
-// beds
-// bathrooms_text
-// hosts.host_name
-//   host_name
-//     host_about
-//   host_identity_verified 
-//   calculated_host_listings.calculated_host_listings_count
-//     calculated_host_listings.calculated_host_listings_count_entire_homes
-//     calculated_host_listings.calculated_host_listings_count_private_rooms
-//     calculated_host_listings.calculated_host_listings_count_shared_rooms
-//     (a subhover) 
-// accommodates
-// property_type
-// listing_url (hover the actual url - call it pretty like google)
-// neighborhood_cleansed
-// license
-// listing_reviews.review_scores_rating
-//   review_scores_accuracy
-//   review_scores_cleanliness
-//   review_scores_checkin 
-//   review_scores_communication 
-//   review_scores_location 
-//   reviews_per_month (?)
-//   review_scores_value 
-
-
-//   charts infoBox
-// dc vs neighborhood max, min, median, mode
-// price
-// number of airbnbs (how many neighborhoods_cleansed are there?)
-// property type
-// ratings
-
-// decide what to do with airbnbs that have no listing_description
-// add a webpage to show EDA plots, w/ tooltip "click to expand", that expands to fullscreen
-// scrape pretty url summary for listing in popup
-// add data for entire calendar year, analyze for trends in price / availability
-
-// remove node_modules from the directory 
-// get ETL for building sql from Imen for repo records
-// share new schema with Imen for listing_description

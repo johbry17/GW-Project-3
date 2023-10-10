@@ -4,14 +4,6 @@ body.dark-mode {
     color: #ffffff;
 }
 
-/*size chart  */
-.chartBox {
-    width:800px;
-    height:400px;
-    float: right;
-  margin-top: 60px;
-  }
-
 /* map container */
 .map-container {
     width: 100%;
@@ -19,7 +11,7 @@ body.dark-mode {
     position: relative;
 }
 
-  /* fixes leaflet tile bug */
+/* fixes leaflet tile bug */
 .leaflet-container.leaflet-touch-drag {
     -ms-touch-action: pinch-zoom;
     touch-action: none;
@@ -58,10 +50,16 @@ body.dark-mode {
     padding: 5px;
 }
 
+/* width when untouched */
 #neighborhoods-dropdown {
     width: 200px;
 }
 
+/* width during user interaction */
 #neighborhoods-dropdown:focus {
     width: auto;
+}
+
+.infoBox-chart {
+    width: 100%,
 }
