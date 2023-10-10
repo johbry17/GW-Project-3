@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS listing_description;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS min_max_night;
@@ -7,15 +6,16 @@ DROP TABLE IF EXISTS listing_reviews;
 DROP TABLE IF EXISTS calculated_host_listings;
 DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS calendar;
+Drop tables IF EXISTS listing_description;
 
-select* from listing_description;
 select* from reviews;
-select* from hosts;
-select* from min_max_night;
-select* from availability;
-select* from listing_reviews;
+select* from  hosts;
+select* from  min_max_night;
+select* from  availability;
+select* from  listing_reviews;
 select* from calculated_host_listings;
-select* from listings;
+select* from listing_description;
+select* from  listings;
 select* from calendar;
 
 CREATE TABLE listings(
@@ -37,8 +37,8 @@ CREATE TABLE listings(
 	beds decimal,
 	price decimal,
 	license VARCHAR
+    
 );
-
 
 CREATE TABLE reviews(
 	review_id BIGINT PRIMARY KEY,
@@ -47,8 +47,8 @@ CREATE TABLE reviews(
 	reviewer_id BIGINT,
 	reviewer_name VARCHAR,
 	review_comments VARCHAR
+	
 );
-
 
 CREATE TABLE hosts(
 	host_id BIGINT PRIMARY KEY,
@@ -72,6 +72,7 @@ CREATE TABLE hosts(
 	host_identity_verified BOOLEAN
 );
 
+
 CREATE TABLE min_max_night(
 	listing_id BIGINT PRIMARY KEY REFERENCES listings,
 	minimum_nights DECIMAL,
@@ -83,7 +84,7 @@ CREATE TABLE min_max_night(
     minimum_nights_avg_ntm DECIMAL,
     maximum_nights_avg_ntm DECIMAL
 );
-
+                                           
 CREATE TABLE availability(
 	id_listing BIGINT PRIMARY KEY REFERENCES listings,
 	has_availability BOOLEAN,
@@ -91,7 +92,7 @@ CREATE TABLE availability(
     availability_60 INT,
 	availability_90 INT,
     availability_365 INT,
-	calendar_last_scraped DATE,
+	last_review,
     instant_bookable BOOLEAN
 );
 
@@ -112,6 +113,7 @@ CREATE TABLE listing_reviews (
 	review_scores_value DECIMAL
 );
 
+
 CREATE TABLE calculated_host_listings(
 	listing_id BIGINT PRIMARY KEY REFERENCES listings,
 	calculated_host_listings_count INT,
@@ -120,6 +122,11 @@ CREATE TABLE calculated_host_listings(
 	calculated_host_listings_count_shared_rooms INT
 );
 
+CREATE TABLE listing_description(
+	id BIGINT PRIMARY KEY REFERENCES listings,
+	hover_description VARCHAR
+);
+	
 CREATE TABLE calendar (
 	num int PRIMARY KEY,
 	listing_id BIGINT REFERENCES listings,
@@ -129,9 +136,9 @@ CREATE TABLE calendar (
 	adjusted_price VARCHAR,
 	minimum_nights INT,
 	maximum_nights INT
-);
+	);
 
-CREATE TABLE listing_description(
-	id BIGINT PRIMARY KEY REFERENCES listings,
-	hover_description VARCHAR(1500)
-);
+	
+	
+	
+	

@@ -18,9 +18,8 @@ We expose the shady underworld of AirBnB
 ## Usage
 Click on the website and do stuff
 
-dc-airbnb is a backup of the database
-database folder contains the csv's and SQL schema to create the database
-ERD_QuickDBD summarizes the SQL tables
+airbnb is a backup of the database
+database contains the csv's and SQL code to create the database
 exploratory_data_analysis contains the EDA
 
 ## Gallery
@@ -35,7 +34,7 @@ Our mental health:
 
 ERD:
 
-![ERD](./static/images/ERD_AirBnB.png)
+![ERD](./static/images/airbnb_erd.png)
 
 
 ## References
@@ -50,6 +49,5 @@ Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/)
 
 Thanks to Geronimo Perez for feedback and assistance
 
-## Authors
-
+## Author
 Amber Amparo, Moussa Diop, Bryan Johns, Imen Najar, October, 2023
