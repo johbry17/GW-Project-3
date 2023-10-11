@@ -13,33 +13,44 @@ Development on this project has stopped.
 - [Author](#author)
 
 ## Description
-We expose the shady underworld of AirBnB
+
+A detialed analysis of Washington D.C.'s AirBnB's, offering a wide variety of metrics for evaluating AirBnB's in Washington, DC, deisgned to help a consumer choose their personal perfect AirBnB. We generate a variety of charts, tables, and an interactive map and make them avialable to the user.
 
 ## Usage
-Click on the website and do stuff
 
-airbnb is a backup of the database
-database contains the csv's and SQL code to create the database
-exploratory_data_analysis contains the EDA
+`app.py` will launch a Flask development server that you can use to host the website. Click on the website and navigate around it. Interact with the charts and tables and map to gather information and evaluate AirBnB's in DC.
+
+`airbnb` is a backup of the database, that a user can load into a postgres database.
+
+The `/database` folder contains the csv's and SQL code used to create the database. `cleaning data.ipynb` shows the ETL process.
+
+`/exploratory_data_analysis` contains `eda.ipynb`, showing our exploratory data analysis.
 
 ## Gallery
 
-Us working on this project:
+Listing Info:
 
-![Internet Cat](./static/images/Internet_Cat.jpg)
+![Listing Info](./static/images/ListingInfo.png)
 
-Our mental health:
+Research by Price:
 
-![Tectonic plates](./static/images/Nintendo_suffering.jpg)
+![Research by Price](./static/images/ResearchByPrice.png)
+
+Price By Neighborhood:
+
+![Price By Neighborhood](./static/images/Chart.png)
+
+Map:
+
+![Map](./static/images/Map.png)
 
 ERD:
 
-![ERD](./static/images/airbnb_erd.png)
-
+![ERD](./static/images/ERD.png)
 
 ## References
 
-Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/)
+Dataset provided by [Inside AirBnB](http://insideairbnb.com/about/). We used the quarterly data summary from 18 June, 2023 - 13 September, 2023.
 
 ## Licenses
 

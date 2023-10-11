@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS min_max_night;
 DROP TABLE IF EXISTS availability;
 DROP TABLE IF EXISTS listing_reviews;
 DROP TABLE IF EXISTS calculated_host_listings;
+Drop table IF EXISTS listing_description;
 DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS calendar;
-Drop tables IF EXISTS listing_description;
 
 select* from reviews;
 select* from  hosts;
